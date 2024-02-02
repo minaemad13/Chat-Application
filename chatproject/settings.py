@@ -25,8 +25,11 @@ SECRET_KEY = 'django-insecure-(u=bt**ox$-4_6^*nol*s*r%bh#e4owpgfv27&bb0o0)b7u9%l
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://chatapp.hs.vc']
 
-ALLOWED_HOSTS = ['https://chatapp.hs.vc']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
