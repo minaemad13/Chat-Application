@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<main class="content" >
+    <div class="container p-2">
+        
+        <div style="vertical-align: middle;display: flex;">
+        {% if inroom %}
+        <a href="/" style="text-decoration: none;color: inherit;"><i class="fa-solid fa-arrow-left " style="vertical-align: middle;font-size: 200%;"></i></a>
+        <div class=" h3 mb-3 mb-3 pl-3">All Groups</div>
+            
+        {% else %}
+        <a href="/" style="text-decoration: none;color: inherit;"><i class="fa-solid fa-arrow-left " style="vertical-align: middle;font-size: 200%;"></i></a>
+        <div class=" h3 mb-3 mb-3 pl-3">Home</div>
+        {% endif %}
+        </div>
+        <style>
+            .navbar-toggler:focus {
+                box-shadow: 0 0 0 0;
+            }
+            .btn-outline-primary:hover {
+                color: #fff;
+                background: linear-gradient(90deg, #1a2e35e8 38%, rgba(254,79,90,0.7315301120448179) 102%);
+                border-image-source: linear-gradient(90deg, rgba(26,46,53,0.908000700280112) 38%, rgba(254,79,90,0.7315301120448179) 102%);
+            }
+            .btn-outline-primary {
+                color: #1a2e35e8;
+                border-color: #1a2e35e8
+            }
+        </style>
+        <div class="card">
+            <div class="row g-0" style="    justify-content: center;">
+                <div class="col-12 col-lg-5 col-xl-3 border-right navbar-expand-lg" style="padding: 2%;">
+                    <button type="button" class="navbar-toggler" style="border: none;background: none;" data-bs-toggle="collapse" data-bs-target="#groupsList" aria-controls="groupsList" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"><i class="fa-solid fa-circle-chevron-down" style="font-size: 158%;"></i></span>
+                    </button>
+                    
+                    <div class="collapse navbar-collapse list-group" id="groupsList"> <!-- Added list-group class here -->
+                        {% if all_chats %}
+                            {% for group in all_chats %}
+                                <a href="/chat/{{group}}/" class="list-group-item list-group-item-action border-0"> <!-- Removed inline style -->
+                                    <div class="d-flex align-items-start">
+                                        <img src="{% static 'imgs/GroupIcon.png'%}" class="rounded-circle mr-1" alt="Group Icon" width="40" height="40">
+                                        <div class="flex-grow-1 ml-3">
+                                            {{group}}
+                                            <div class="small"><span class="fas fa-circle chat-online"></span> Online</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="d-flex justify-content-center align-items-center" style="height: 100%; color: gray;"> <!-- Adjusted for centering -->
+                                No Groups Found Yet 😣️😣️
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+               
+                <div class="col-12 col-lg-7 col-xl-9">
+
+                    {% if inroom %}
+                    <div class="py-2 px-4 border-bottom d-none d-lg-block">
+                        <div class="d-flex align-items-start">
+                            <img src="{% static 'imgs/GroupIcon.png'%}" class="rounded-circle mr-1" alt="Vanessa Tucker"
+                                width="40" height="40">
+                            <div class="flex-grow-1 ml-3">
+                                {{room_name}}
+                                <div class="small"><span class="fas fa-circle chat-online"></span> Online</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="position-relative">
+                        <div class="chat-messages p-4">                            
+                        </div>
+                    </div>
+                    <div class="flex-grow-0 py-3 px-4 border-top">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="chat-message-input" placeholder="Type your message">
+                            <button class="btn btn-outline-primary" id ='chat-message-submit'>Send</button>
+                        </div>
+                    </div>
+
+<script>
+    const roomName = '{{room_name}}'
+    const userName = '{{username}}'
+    const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName +'/');
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        
+        if (data.message != 'No Messages Found.'){
+
+        document.querySelector('.chat-messages').innerHTML += data.userName == userName ? 
+        `<div class="chat-message-right pb-4">
+            <div>
+                <img src="{%  static 'imgs/avatar1.png'%}"
+                    class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                <div class="text-muted small text-nowrap mt-2" >${data.time}</div>
+            </div>
+            <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3" style='max-width: 70%;'>
+                <div class="font-weight-bold mb-1 chat-message-right">You</div>
+                ${data.message}
+            </div>
+        </div>` :
+        `<div class="chat-message-left pb-4">
+            <div>
+                <img src="{%  static 'imgs/avatar5.png'%}"
+                    class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                <div class="text-muted small text-nowrap mt-2">${data.time}</div>
+            </div>
+            <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3" style='max-width: 70%;'>
+                <div class="font-weight-bold mb-1">${data.userName}</div>
+                ${data.message}
+            </div>
+        </div>` }
+        else{
+            document.querySelector('.chat-messages').innerHTML= `<div style="    display: flex;
+                       
+            justify-content: center;
+            
+            padding: 13%;
+            color: gray;">No Massgaes Yet 📭️📭️</div>`
+        }
+    };
+    
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+            //'userName':userName
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+                    {% else %}
+                    <div class="container" style="padding:10% ;">
+                    <h2 class="text-center"> Enter Group Name You Want Create or Join</h2>
+                    <br>
+                    <div class="container">
+                        
+                        <form id="myForm">
+
+                            <div class="mb-3">
+                                <label for="room-name-input" class="form-label">Group Name 😈️</label>
+                                <input type="text" class="form-control" id="room-name-input" required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-outline-primary"
+                                    id="room-name-submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                   </div>
+                    </div>
+                    <script>
+                        document.getElementById("myForm").addEventListener("submit", function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+                    
+                            var roomName = (document.getElementById("room-name-input").value).replace(/ /g, '_');;
+                            
+                            var url = "chat/" + roomName + "/" ;
+
+                            window.location.href = url;
+                        });
+                    
+                    </script>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    </div>
+</main>
+
+
+{% endblock %}
