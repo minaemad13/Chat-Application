@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(u=bt**ox$-4_6^*nol*s*r%bh#e4owpgfv27&bb0o0)b7u9%l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://chatapp.hs.vc']
 
 
 # Application definition
