@@ -27,12 +27,16 @@ Follow these instructions to get a copy of the project up and running on your lo
    git clone https://github.com/minaemad13/Chat-Application.git
 
 2. Navigate to the project directory:
-   cd Chat-Application
+   ```bash
+      cd Chat-Application
 
-3. Install the required dependencies:
+4. Install the required dependencies:
+    ```bash
    pip install -r requirements.txt
 
-4. Install and Run Radies Container:
+6. Install and Run Radies Container:
+    ```bash
    docker run -p 6379:6379 redis:7
-5. Run The Apllication:
+8. Run The Application:
+    ```bash
    python manage.py runserver        
