@@ -4,17 +4,30 @@
 {% block content %}
 
 
-<main class="content" >
+<main class="content" style="    padding-top: 4%;" >
     <div class="container p-2">
         
-        <div style="vertical-align: middle;display: flex;">
+        <div style="vertical-align: middle;display: flex;     flex-direction: row;
+        flex-wrap: nowrap;align-content: flex-end;justify-content: space-between;align-items: flex-start;">
         {% if inroom %}
+        
         <a href="/" style="text-decoration: none;color: inherit;"><i class="fa-solid fa-arrow-left " style="vertical-align: middle;font-size: 200%;"></i></a>
         <div class=" h3 mb-3 mb-3 pl-3">All Groups</div>
+
+        <a  href="{%url 'logout'%}"  class='btn btn-outline-primary' style="    display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;">Logout</a>
             
         {% else %}
         <a href="/" style="text-decoration: none;color: inherit;"><i class="fa-solid fa-arrow-left " style="vertical-align: middle;font-size: 200%;"></i></a>
         <div class=" h3 mb-3 mb-3 pl-3">Home</div>
+
+        <a  href="{%url 'logout'%}"  class='btn btn-outline-primary' style="    display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;">Logout</a>
+            
         {% endif %}
         </div>
         <style>
@@ -86,7 +99,7 @@
 <script>
     const roomName = '{{room_name}}'
     const userName = '{{username}}'
-    const chatSocket = new WebSocket('wss://' + window.location.host + '/ws/chat/' + roomName +'/');
+    const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName +'/');
 
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);

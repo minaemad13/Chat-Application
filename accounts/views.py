@@ -2,6 +2,7 @@ import random
 from django.shortcuts import render,redirect
 from django.http import HttpResponseNotAllowed
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from accounts.models import User
@@ -40,4 +41,9 @@ def login(request):
             return redirect('register')
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
-    
+
+@login_required
+def logout_user(request):
+    auth.logout(request)
+    return redirect('login')
+ 
